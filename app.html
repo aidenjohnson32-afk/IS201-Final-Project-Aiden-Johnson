@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>What Cane's Combo Are You?</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #fff8f0;
+            font-family: Arial, sans-serif;
+            color: #2b2b2b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #navbar {
+            background-color: #c8102e;
+            padding: 14px 30px;
+            display: flex;
+            gap: 20px;
+        }
+
+        #navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        #navbar a:hover { text-decoration: underline; color: #ffd700; }
+
+        #hero {
+            background-color: #c8102e;
+            color: white;
+            text-align: center;
+            padding: 50px 20px 40px;
+        }
+
+        #hero h1 { font-size: 2.5rem; color: #ffd700; margin-bottom: 8px; }
+        #hero p { font-size: 1rem; color: #ffe0e0; }
+
+        #quiz-container {
+            max-width: 640px;
+            margin: 40px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e0d0d0;
+            border-radius: 4px;
+            margin-bottom: 24px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #c8102e;
+            border-radius: 4px;
+            transition: width 0.4s;
+        }
+
+        .question-card {
+            background: white;
+            border: 1px solid #e0c8c8;
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 16px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2b2b2b;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: #fff8f0;
+            border: 1.5px solid #e0c8c8;
+            border-radius: 8px;
+            padding: 14px 12px;
+            font-size: 0.95rem;
+            color: #2b2b2b;
+            cursor: pointer;
+            text-align: left;
+            line-height: 1.4;
+            transition: border-color 0.15s, background 0.15s;
+        }
+
+        .option-btn:hover { border-color: #c8102e; background: white; }
+        .option-btn.selected { border-color: #c8102e; border-width: 2.5px; background: white; }
+
+        .nav-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1.5px solid #aaa;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            color: #2b2b2b;
+        }
+
+        .nav-btn.primary {
+            background: #c8102e;
+            color: white;
+            border-color: #c8102e;
+            font-weight: bold;
+        }
+
+        .nav-btn:disabled { opacity: 0.3; cursor: default; }
+        .step-label { font-size: 0.9rem; color: #888; }
+
+        .result-card {
+            background: white;
+            border: 2.5px solid #c8102e;
+            border-radius: 12px;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .result-emoji { font-size: 56px; margin-bottom: 16px; }
+        .result-title { font-size: 1.6rem; font-weight: bold; color: #c8102e; margin-bottom: 10px; }
+
+        .result-badge {
+            display: inline-block;
+            background: #fff0f0;
+            color: #c8102e;
+            border: 1px solid #c8102e;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            padding: 4px 16px;
+            margin-bottom: 18px;
+        }
+
+        .result-desc {
+            font-size: 1rem;
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+
+        .restart-btn {
+            background: #c8102e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 32px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .restart-btn:hover { background: #a00d24; }
+
+        #footer {
+            background-color: #c8102e;
+            color: white;
+            text-align: center;
+            padding: 24px 20px;
+            margin-top: 40px;
+        }
+
+        #footer a { color: #ffd700; text-decoration: none; font-weight: bold; }
+        #footer p { margin-top: 8px; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+    <div id="navbar">
+        <a href="scratch.html">← Back to Scratch Page</a>
+        <a href="index.html">Resume</a>
+    </div>
+
+    <div id="hero">
+        <h1>🍗 What Cane's Combo Are You?</h1>
+        <p>Answer 5 questions and find out which Raising Cane's combo matches your personality.</p>
+    </div>
+
+    <div id="quiz-container">
+        <div id="quiz-area"></div>
+    </div>
+
+    <div id="footer">
+        <a href="scratch.html">← Back to Scratch Page</a>
+        <p>© 2025 Aiden Johnson | <a href="index.html">Resume</a></p>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "It's Friday night. What are you doing?",
+                options: [
+                    { text: "Hanging with a big group of friends", scores: {caniac: 2} },
+                    { text: "Low-key night at home, just vibing", scores: {three: 2} },
+                    { text: "Out doing something adventurous", scores: {box: 2} },
+                    { text: "Keeping it simple and classic", scores: {combo: 2} }
+                ]
+            },
+            {
+                q: "Pick your ideal weekend activity:",
+                options: [
+                    { text: "Hitting the slopes or outdoors", scores: {box: 2} },
+                    { text: "Gaming session all day", scores: {three: 2} },
+                    { text: "Exploring a new city", scores: {caniac: 2} },
+                    { text: "Golf or a chill sport", scores: {combo: 2} }
+                ]
+            },
+            {
+                q: "What's your ordering style at a restaurant?",
+                options: [
+                    { text: "I know what I want before I walk in", scores: {combo: 2} },
+                    { text: "I always try something new", scores: {box: 2} },
+                    { text: "I order the most food on the table", scores: {caniac: 2} },
+                    { text: "Small and simple — I don't need much", scores: {three: 2} }
+                ]
+            },
+            {
+                q: "How do you handle a stressful situation?",
+                options: [
+                    { text: "Stay calm and think it through", scores: {combo: 2} },
+                    { text: "Talk it out with friends", scores: {caniac: 2} },
+                    { text: "Take a break and recharge alone", scores: {three: 2} },
+                    { text: "Jump into action immediately", scores: {box: 2} }
+                ]
+            },
+            {
+                q: "Which best describes your personality?",
+                options: [
+                    { text: "The life of the party", scores: {caniac: 2} },
+                    { text: "Reliable and consistent", scores: {combo: 2} },
+                    { text: "Laid back and easygoing", scores: {three: 2} },
+                    { text: "Bold and always up for more", scores: {box: 2} }
+                ]
+            }
+        ];
+
+        const results = {
+            combo: {
+                name: "The Chicken Finger Combo",
+                emoji: "🍗",
+                badge: "Classic & Reliable",
+                desc: "You're the dependable one in the group — consistent, no-nonsense, and always a good time. You don't need to overcomplicate things. You know what you like and you go for it every time. Just like this combo, you're a timeless classic."
+            },
+            box: {
+                name: "The Box Combo",
+                emoji: "📦",
+                badge: "Bold & Adventurous",
+                desc: "You go big or go home. Extra fingers, extra sauce — you're not afraid to level up. You bring energy to every room and always want more out of life. The Box Combo matches your appetite for adventure."
+            },
+            caniac: {
+                name: "The Caniac Combo",
+                emoji: "🎉",
+                badge: "Social & Extra",
+                desc: "You are the ultimate. The most food, the most fun, the most everything. You thrive in big groups and love being the center of the action. The Caniac Combo is basically your spirit animal — max size, max personality."
+            },
+            three: {
+                name: "The 3 Finger Combo",
+                emoji: "✌️",
+                badge: "Chill & Easygoing",
+                desc: "You don't need much to be happy. Simple, satisfying, and low-key — that's your vibe. You're the most underrated person in the room, and honestly? That's kind of your superpower. The 3 Finger Combo keeps it real, just like you."
+            }
+        };
+
+        let current = 0;
+        let answers = [];
+        let scores = { combo: 0, box: 0, caniac: 0, three: 0 };
+
+        function render() {
+            const area = document.getElementById('quiz-area');
+            if (current >= questions.length) { showResult(area); return; }
+            const q = questions[current];
+            const selected = answers[current];
+            area.innerHTML = `
+                <div class="progress-bar"><div class="progress-fill" style="width:${(current/questions.length)*100}%"></div></div>
+                <div class="question-card">
+                    <p class="question-text">${q.q}</p>
+                    <div class="options-grid">
+                        ${q.options.map((o, i) => `<button class="option-btn${selected === i ? ' selected' : ''}" onclick="selectOption(${i})">${o.text}</button>`).join('')}
+                    </div>
+                </div>
+                <div class="nav-row">
+                    <button class="nav-btn" onclick="goBack()" ${current === 0 ? 'disabled' : ''}>← Back</button>
+                    <span class="step-label">${current + 1} of ${questions.length}</span>
+                    <button class="nav-btn primary" onclick="goNext()" ${selected === undefined ? 'disabled' : ''}>${current === questions.length - 1 ? 'See my result →' : 'Next →'}</button>
+                </div>
+            `;
+        }
+
+        function selectOption(i) { answers[current] = i; render(); }
+
+        function goNext() {
+            if (answers[current] === undefined) return;
+            const chosen = questions[current].options[answers[current]];
+            Object.keys(chosen.scores).forEach(k => scores[k] += chosen.scores[k]);
+            current++;
+            render();
+        }
+
+        function goBack() {
+            if (current === 0) return;
+            current--;
+            const prev = answers[current];
+            if (prev !== undefined) {
+                const chosen = questions[current].options[prev];
+                Object.keys(chosen.scores).forEach(k => scores[k] -= chosen.scores[k]);
+            }
+            render();
+        }
+
+        function showResult(area) {
+            const top = Object.keys(scores).reduce((a, b) => scores[a] >= scores[b] ? a : b);
+            const r = results[top];
+            area.innerHTML = `
+                <div class="result-card">
+                    <div class="result-emoji">${r.emoji}</div>
+                    <div class="result-title">${r.name}</div>
+                    <div class="result-badge">${r.badge}</div>
+                    <p class="result-desc">${r.desc}</p>
+                    <button class="restart-btn" onclick="restartQuiz()">Take it again</button>
+                </div>
+            `;
+        }
+
+        function restartQuiz() {
+            current = 0; answers = []; scores = { combo: 0, box: 0, caniac: 0, three: 0 };
+            render();
+        }
+
+        render();
+    </script>
+</body>
+</html>
